@@ -398,7 +398,8 @@ impl<P: Clone + Eq + Hash + Debug + Send + Sync + 'static> Renderer<'_, P> {
     /// the body, top to bottom (none when the column is iconic or its body is empty). Groups
     /// taller than the body together scroll.
     pub(in crate::docking) fn column_layout(&self, column: &Column<P>, rect: Rect) -> (Rect, Rect, Vec<f32>) {
-        let bar = Rect::from_min_max(rect.min, pos2(rect.right(), (rect.top() + self.style.column_bar_height).min(rect.bottom())));
+        let bar_h = if self.style.column_bar { self.style.column_bar_height } else { 0.0 };
+        let bar = Rect::from_min_max(rect.min, pos2(rect.right(), (rect.top() + bar_h).min(rect.bottom())));
         let body = Rect::from_min_max(pos2(rect.left(), bar.bottom()), rect.max);
         if column.iconic || !usable(body) {
             return (bar, body, Vec::new());
@@ -454,7 +455,9 @@ impl<P: Clone + Eq + Hash + Debug + Send + Sync + 'static> Renderer<'_, P> {
         }
         self.record_column_float(column.groups.iter().flat_map(|g| g.panels.iter().cloned()).collect(), rect);
         let (bar, body, heights) = self.column_layout(column, rect);
-        self.column_bar(ui, column, first, bar, rect, edge);
+        if self.style.column_bar && usable(bar) {
+            self.column_bar(ui, column, first, bar, rect, edge);
+        }
         if column.iconic && usable(body) {
             self.iconic_column(ui, column, body, edge);
         }

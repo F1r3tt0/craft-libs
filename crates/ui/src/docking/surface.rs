@@ -91,6 +91,8 @@ pub struct DockStyle {
     pub new_dock_zones: bool,
     /// [D] Height of the bar above each dock column. It drags the column and holds its »/« button.
     pub column_bar_height: f32,
+    /// [D] Show the bar above each dock column (drag grip and »/« collapse button). Off: dock columns start straight at their groups.
+    pub column_bar: bool,
     /// [D] Height of the band centred on the seam between two stacked groups in a dock column
     /// (28 pt).
     pub seam_band: f32,
@@ -223,6 +225,7 @@ impl DockStyle {
             drop_line_width: 4.0,
             new_dock_zones: true,
             column_bar_height: 14.0,
+            column_bar: true,
             seam_band: 28.0,
             column_edge_band: 28.0,
             new_dock_band: 28.0,
